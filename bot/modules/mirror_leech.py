@@ -358,13 +358,13 @@ def zip_mirror(update, context):
     _mirror_leech(context.bot, update.message, True)
 
 def qb_mirror(update, context):
-    _mirror_leech(context.bot, update.message, isQbit=True)
+    _mirror_leech(context.bot, update.message, isQbit=False)
 
 def qb_unzip_mirror(update, context):
-    _mirror_leech(context.bot, update.message, extract=True, isQbit=True)
+    _mirror_leech(context.bot, update.message, extract=True, isQbit=False)
 
 def qb_zip_mirror(update, context):
-    _mirror_leech(context.bot, update.message, True, isQbit=True)
+    _mirror_leech(context.bot, update.message, True, isQbit=False)
 
 def leech(update, context):
     _mirror_leech(context.bot, update.message, isLeech=True)
@@ -376,13 +376,13 @@ def zip_leech(update, context):
     _mirror_leech(context.bot, update.message, True, isLeech=True)
 
 def qb_leech(update, context):
-    _mirror_leech(context.bot, update.message, isQbit=True, isLeech=True)
+    _mirror_leech(context.bot, update.message, isQbit=False, isLeech=True)
 
 def qb_unzip_leech(update, context):
-    _mirror_leech(context.bot, update.message, extract=True, isQbit=True, isLeech=True)
+    _mirror_leech(context.bot, update.message, extract=True, isQbit=F, isLeech=True)
 
 def qb_zip_leech(update, context):
-    _mirror_leech(context.bot, update.message, True, isQbit=True, isLeech=True)
+    _mirror_leech(context.bot, update.message, True, isQbit=False, isLeech=True)
 
 def cloneNode(update, context):
     _mirror_leech(context.bot, update.message, isClone=True)
@@ -393,11 +393,11 @@ unzip_mirror_handler = CommandHandler(BotCommands.UnzipMirrorCommand, unzip_mirr
                                 filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
 zip_mirror_handler = CommandHandler(BotCommands.ZipMirrorCommand, zip_mirror,
                                 filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
-qb_mirror_handler = CommandHandler(BotCommands.QbMirrorCommand, qb_mirror,
+qb_mirror_handler = CommandHandler(BotCommands.QbMirrorCommand, mirror,
                                 filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
-qb_unzip_mirror_handler = CommandHandler(BotCommands.QbUnzipMirrorCommand, qb_unzip_mirror,
+qb_unzip_mirror_handler = CommandHandler(BotCommands.QbUnzipMirrorCommand, unzip_mirror,
                                 filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
-qb_zip_mirror_handler = CommandHandler(BotCommands.QbZipMirrorCommand, qb_zip_mirror,
+qb_zip_mirror_handler = CommandHandler(BotCommands.QbZipMirrorCommand, zip_mirror,
                                 filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
 leech_handler = CommandHandler(BotCommands.LeechCommand, leech,
                                 filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
@@ -405,11 +405,11 @@ unzip_leech_handler = CommandHandler(BotCommands.UnzipLeechCommand, unzip_leech,
                                 filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
 zip_leech_handler = CommandHandler(BotCommands.ZipLeechCommand, zip_leech,
                                 filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
-qb_leech_handler = CommandHandler(BotCommands.QbLeechCommand, qb_leech,
+qb_leech_handler = CommandHandler(BotCommands.QbLeechCommand, leech,
                                 filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
-qb_unzip_leech_handler = CommandHandler(BotCommands.QbUnzipLeechCommand, qb_unzip_leech,
+qb_unzip_leech_handler = CommandHandler(BotCommands.QbUnzipLeechCommand, unzip_leech,
                                 filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
-qb_zip_leech_handler = CommandHandler(BotCommands.QbZipLeechCommand, qb_zip_leech,
+qb_zip_leech_handler = CommandHandler(BotCommands.QbZipLeechCommand, zip_leech,
                                 filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
 clone_handler = CommandHandler(BotCommands.CloneCommand, cloneNode, 
                                 filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
