@@ -1,4 +1,4 @@
-FROM anasty17/mltb:latest
+FROM noman12/atrociousbot:latest
 
 WORKDIR /usr/src/app
 RUN chmod 777 /usr/src/app
