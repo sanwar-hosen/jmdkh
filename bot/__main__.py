@@ -23,7 +23,7 @@ from bot.helper.telegram_helper.message_utils import (editMessage, sendLogFile, 
 from bot.modules import (authorize, bot_settings, bt_select, cancel_mirror,
                          category_select, count, delete, drive_list,
                          eval, mirror_leech, mirror_status, rmdb, rss,
-                         save_message, search, shell, users_settings, ytdlp, anonymous)
+                         save_message, search, shell, users_settings, ytdlp, anonymous, speedtest)
 
 
 def stats(update, context):

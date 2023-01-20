@@ -22,7 +22,7 @@ class _BotCommands:
         self.YtdlZipLeechCommand = (f'ytdlzipleech{CMD_SUFFIX}', f'yzl{CMD_SUFFIX}')
         self.CloneCommand = f'clone{CMD_SUFFIX}'
         self.CountCommand = f'count{CMD_SUFFIX}'
-        self.DeleteCommand = f'del{CMD_SUFFIX}'
+        self.DeleteCommand = f'dlt{CMD_SUFFIX}'
         self.CancelMirror = f'cancel{CMD_SUFFIX}'
         self.CancelAllCommand = (f'cancelall{CMD_SUFFIX}', 'cancelallbot')
         self.ListCommand = f'list{CMD_SUFFIX}'
@@ -52,5 +52,6 @@ class _BotCommands:
         self.RssUnSubCommand = (f'rssunsub{CMD_SUFFIX}', f'rus{CMD_SUFFIX}')
         self.RssSettingsCommand = (f'rssset{CMD_SUFFIX}', f'rst{CMD_SUFFIX}')
         self.RmdbCommand = f'rmdb{CMD_SUFFIX}'
+        self.SpeedCommand = f'speedtest{CMD_SUFFIX}'
 
 BotCommands = _BotCommands()
