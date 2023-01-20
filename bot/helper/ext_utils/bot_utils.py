@@ -248,6 +248,15 @@ def check_user_tasks(user_id, maxtask):
     if tasks:= getAllDownload(MirrorStatus.STATUS_DOWNLOADING, user_id, False):
         return len(tasks) >= maxtask
 
+def handleIndex(index, dic):
+    """Handle IndexError for any List (Runs Index Loop) +ve & -ve Supported"""
+    while True:
+        if abs(index) >= len(dic):
+            if index < 0: index = len(dic) - abs(index)
+            elif index > 0: index = index - len(dic)
+        else: break
+    return index
+    
 def get_readable_time(seconds: int) -> str:
     result = ''
     (days, remainder) = divmod(seconds, 86400)

@@ -2,7 +2,7 @@ from io import BytesIO
 from time import sleep, time
 
 from pyrogram.errors import FloodWait
-from telegram import ChatPermissions
+from telegram import ChatPermissions, InputMediaPhoto
 from telegram.error import RetryAfter, Unauthorized
 
 from bot import (LOGGER, Interval, bot, btn_listener, config_dict, rss_session,
@@ -74,6 +74,30 @@ def deleteMessage(bot, message):
     except:
         pass
 
+def sendPhoto(text, bot, message, photo, reply_markup=None):
+    try:
+        return bot.send_photo(chat_id=message.chat_id, photo=photo, reply_to_message_id=message.message_id,
+            caption=text, reply_markup=reply_markup, parse_mode='html')
+    except RetryAfter as r:
+        LOGGER.warning(str(r))
+        sleep(r.retry_after * 1.5)
+        return sendPhoto(text, bot, message, photo, reply_markup)
+    except Exception as e:
+        LOGGER.error(str(e))
+        return
+
+def editPhoto(text, message, photo, reply_markup=None):
+    try:
+        return bot.edit_message_media(media=InputMediaPhoto(media=photo, caption=text, parse_mode='html'), chat_id=message.chat.id, message_id=message.message_id,
+                                      reply_markup=reply_markup)
+    except RetryAfter as r:
+        LOGGER.warning(str(r))
+        sleep(r.retry_after * 1.5)
+        return editPhoto(text, message, photo, reply_markup)
+    except Exception as e:
+        LOGGER.error(str(e))
+        return
+        
 def sendLogFile(bot, message):
     with open('log.txt', 'rb') as f:
         bot.sendDocument(document=f, filename=f.name,
