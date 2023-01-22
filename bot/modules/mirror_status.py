@@ -1,7 +1,8 @@
 from threading import Thread
 from time import time
 from random import choice
-from psutil import cpu_percent, disk_usage, virtual_memory
+from psutil import (boot_time, cpu_count, cpu_percent, disk_usage,
+                    net_io_counters, swap_memory, virtual_memory)
 from telegram.ext import CallbackQueryHandler, CommandHandler
 
 from bot import (DOWNLOAD_DIR, Interval, botStartTime, config_dict, dispatcher,
@@ -12,20 +13,20 @@ from bot.helper.ext_utils.bot_utils import (get_readable_file_size,
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.message_utils import (sendMessage, deleteMessage, auto_delete_message, sendStatusMessage, update_all_messages, delete_all_messages, editMessage, editCaption, sendPhoto)
-from bot.
+from bot.__main__ import progress_bar
 
 def mirror_status(update, context):
-cpuUsage = cpu_percent(interval=0.5)
-
     with download_dict_lock:
         count = len(download_dict)
     if count == 0:
         currentTime = get_readable_time(time() - botStartTime)
         free = get_readable_file_size(disk_usage(DOWNLOAD_DIR).free)
+        cpuUsage = cpu_percent(interval=0.5)
+        mem_p = memory.percent
         message = '⚠️No Active Downloads !\n\n '
         message += f'<b>CPU:</b> [{progress_bar(cpuUsage)}] {cpuUsage}%''\n 
-                   f'<b>FREE</b>: {free}" | <b>UPTIME</b>: {currentTime}'' \n
-                   f"<b>RAM</b>: {virtual_memory().percent}% | <b>UPTIME</b>: {currentTime}"
+                   f'<b>FREE</b>: {free}" || <b>UPTIME</b>: {currentTime}'' \n
+                   f"<b>RAM:</b> [{progress_bar(mem_p)}] {mem_p}% "
         reply_message = sendPhoto(message, context.bot, update.message, choice(config_dict['PICS']))
         Thread(target=auto_delete_message, args=(context.bot, update.message, reply_message)).start()
     else:
