@@ -1,15 +1,29 @@
 from io import BytesIO
+from random import choice
 from time import sleep, time
-
+from os import remove
 from pyrogram.errors import FloodWait
-from telegram import ChatPermissions, InputMediaPhoto
+from telegram import ChatPermissions, InputMediaPhoto, InlineKeyboardMarkup
+from telegram.message import Message
 from telegram.error import RetryAfter, Unauthorized
-
+from pyrogram import enums
 from bot import (LOGGER, Interval, bot, btn_listener, config_dict, rss_session,
                  status_reply_dict, status_reply_dict_lock)
 from bot.helper.ext_utils.bot_utils import get_readable_message, setInterval
 from bot.helper.telegram_helper.button_build import ButtonMaker
 
+
+def sendMessage(text, bot, message,photo, reply_markup=None):
+    try:
+        return bot.sendMessage(message.chat_id, reply_to_message_id=message.message_id,
+                               text=text, photo=photo, reply_markup=reply_markup)
+    except RetryAfter as r:
+        LOGGER.warning(str(r))
+        sleep(r.retry_after * 1.5)
+        return sendMessage(text, bot, message,photo, reply_markup)
+    except Exception as e:
+        LOGGER.error(str(e))
+        return
 
 def sendMessage(text, bot, message, reply_markup=None):
     try:
@@ -23,20 +37,21 @@ def sendMessage(text, bot, message, reply_markup=None):
         LOGGER.error(str(e))
         return
 
-def sendPhoto(text, bot, message, photo):
-    try:
-        return bot.sendPhoto(message.chat_id, photo, text, reply_to_message_id=message.message_id)
-    except RetryAfter as r:
-        LOGGER.warning(str(r))
-        sleep(r.retry_after * 1.5)
-        return sendPhoto(text, bot, message, photo)
-    except Exception as e:
-        LOGGER.error(str(e))
-        return
-
 def editMessage(text, message, reply_markup=None):
     try:
         bot.editMessageText(text=text, message_id=message.message_id, chat_id=message.chat_id, reply_markup=reply_markup)
+    except RetryAfter as r:
+        LOGGER.warning(str(r))
+        sleep(r.retry_after * 1.5)
+        return editMessage(text, message, reply_markup)
+    except Exception as e:
+        LOGGER.error(str(e))
+        return str(e)
+
+def editCaption(text, message, reply_markup=None):
+    try:
+        bot.edit_message_caption(chat_id=message.chat.id, message_id=message.message_id, caption=text, 
+                              reply_markup=reply_markup, parse_mode='HTML')
     except RetryAfter as r:
         LOGGER.warning(str(r))
         sleep(r.retry_after * 1.5)
@@ -74,6 +89,18 @@ def deleteMessage(bot, message):
     except:
         pass
 
+def sendPhoto(text, bot, message, photo, reply_markup=None):
+    try:
+        return bot.send_photo(chat_id=message.chat_id, photo=photo, reply_to_message_id=message.message_id,
+            caption=text, reply_markup=reply_markup, parse_mode='html')
+    except RetryAfter as r:
+        LOGGER.warning(str(r))
+        sleep(r.retry_after * 1.5)
+        return sendPhoto(text, bot, message, photo, reply_markup)
+    except Exception as e:
+        LOGGER.error(str(e))
+        return
+         
 def editPhoto(text, message, photo, reply_markup=None):
     try:
         return bot.edit_message_media(media=InputMediaPhoto(media=photo, caption=text, parse_mode='html'), chat_id=message.chat.id, message_id=message.message_id,
@@ -145,17 +172,34 @@ def update_all_messages(force=False):
 
 def sendStatusMessage(msg, bot):
     progress, buttons = get_readable_message()
-    if not progress:
+    if progress is None:
         return
     with status_reply_dict_lock:
-        if msg.chat_id in status_reply_dict:
-            message = status_reply_dict[msg.chat_id][0]
+        if msg.chat.id in status_reply_dict:
+            message = status_reply_dict[msg.chat.id][0]
             deleteMessage(bot, message)
-            del status_reply_dict[msg.chat_id]
-        message = sendMessage(progress, bot, msg, buttons)
-        status_reply_dict[msg.chat_id] = [message, time()]
+            del status_reply_dict[msg.chat.id]
+        if config_dict['PICS']:
+            message = sendPhoto(progress, bot, msg, choice(config_dict['PICS']), buttons)
+        else:
+            message = sendMessage(progress, bot, msg, buttons)
+        status_reply_dict[msg.chat.id] = [message, time()]
         if not Interval:
             Interval.append(setInterval(config_dict['DOWNLOAD_STATUS_UPDATE_INTERVAL'], update_all_messages))
+
+def sendMarkup(text, bot, message: Message, reply_markup: InlineKeyboardMarkup, photo):
+    try:
+        return bot.sendMessage(message.chat_id,
+                            reply_to_message_id=message.message_id,
+                            text=text, reply_markup=reply_markup, allow_sending_without_reply=True,
+                            parse_mode='HTML', disable_web_page_preview=True)
+    except RetryAfter as r:
+        LOGGER.warning(str(r))
+        sleep(r.retry_after * 1.5)
+        return sendMarkup(text, bot, message, reply_markup)
+    except Exception as e:
+        LOGGER.error(str(e))
+        return
 
 def sendDmMessage(bot, message, dmMode, isLeech=False):
     if dmMode == 'mirror' and isLeech or dmMode == 'leech' and not isLeech:

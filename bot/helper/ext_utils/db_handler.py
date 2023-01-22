@@ -22,7 +22,7 @@ class DbManger:
         except PyMongoError as e:
             LOGGER.error(f"Error in DB connection: {e}")
             self.__err = True
-
+            
     def db_load(self):
         if self.__err:
             return

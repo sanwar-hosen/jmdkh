@@ -1,3 +1,4 @@
+from PIL import Image
 from asyncio import get_event_loop
 from faulthandler import enable as faulthandler_enable
 from logging import (INFO, FileHandler, StreamHandler, basicConfig, error,
@@ -261,6 +262,11 @@ DUMP_CHAT = '' if len(DUMP_CHAT) == 0 else int(DUMP_CHAT)
 LOG_CHAT = environ.get('LOG_CHAT', '')
 LOG_CHAT = '' if len(LOG_CHAT) == 0 else int(LOG_CHAT)
 
+SUPPORT_CHAT = environ.get('SUPPORT_CHAT', '')
+if len(SUPPORT_CHAT) == 0:
+    warning('SUPPORT_CHAT not provided!')
+    SUPPORT_CHAT = ''
+    
 STATUS_LIMIT = environ.get('STATUS_LIMIT', '')
 STATUS_LIMIT = '' if len(STATUS_LIMIT) == 0 else int(STATUS_LIMIT)
 
@@ -316,6 +322,67 @@ EQUAL_SPLITS = EQUAL_SPLITS.lower() == 'true'
 
 MEDIA_GROUP = environ.get('MEDIA_GROUP', '')
 MEDIA_GROUP = MEDIA_GROUP.lower() == 'true'
+
+FINISHED_PROGRESS_STR = environ.get('FINISHED_PROGRESS_STR', '')
+UN_FINISHED_PROGRESS_STR = environ.get('UN_FINISHED_PROGRESS_STR', '')
+MULTI_WORKING_PROGRESS_STR = environ.get('MULTI_WORKING_PROGRESS_STR', '')
+if len(FINISHED_PROGRESS_STR) == 0 or len(FINISHED_PROGRESS_STR) == 0 or len(MULTI_WORKING_PROGRESS_STR) == 0:
+    FINISHED_PROGRESS_STR = '█' # '■'
+    UN_FINISHED_PROGRESS_STR = '▒' # '□'
+    MULTI_WORKING_PROGRESS_STR = '▁ ▂ ▃ ▄ ▅ ▆ ▇'
+MULTI_WORKING_PROGRESS_STR = (MULTI_WORKING_PROGRESS_STR.replace("'", '').replace('"', '').replace('[', '').replace(']', '').replace(",", "")).split(' ')
+
+if len(MULTI_WORKING_PROGRESS_STR) != 7:
+    LOGGER.warning("Multi Progress doesn't contain 7 Symbols. Check Agian, Using Default for Now !")
+    MULTI_WORKING_PROGRESS_STR = '▁ ▂ ▃ ▄ ▅ ▆ ▇'.split(' ')
+    
+SHOW_LIMITS_IN_STATS = environ.get('SHOW_LIMITS_IN_STATS', '')
+SHOW_LIMITS_IN_STATS = SHOW_LIMITS_IN_STATS.lower() == 'true'
+
+TIMEZONE = environ.get('TIMEZONE', '')
+if len(TIMEZONE) == 0:
+    TIMEZONE = 'Asia/Dhaka'
+
+IMAGE_URL = environ.get('IMAGE_URL', '')
+if len(IMAGE_URL) == 0:
+    IMAGE_URL = 'https://telegra.ph/file/4684a3944225bf5d5ce1b.png'
+
+PIXABAY_API_KEY = environ.get('PIXABAY_API_KEY', '')
+if len(PIXABAY_API_KEY) == 0:
+    PIXABAY_API_KEY = ''
+
+PIXABAY_CATEGORY = environ.get('PIXABAY_CATEGORY', '')
+if len(PIXABAY_CATEGORY) == 0:
+    PIXABAY_CATEGORY = ''
+
+PIXABAY_SEARCH = environ.get('PIXABAY_SEARCH', '')
+if len(PIXABAY_SEARCH) == 0:
+    PIXABAY_SEARCH = ''
+
+WALLCRAFT_CATEGORY = environ.get('WALLCRAFT_CATEGORY', '')
+if len(WALLCRAFT_CATEGORY) == 0:
+    WALLCRAFT_CATEGORY = ''
+
+WALLFLARE_SEARCH = environ.get('WALLFLARE_SEARCH', '')
+if len(WALLFLARE_SEARCH) == 0:
+    WALLFLARE_SEARCH = ''
+
+WALLTIP_SEARCH = environ.get('WALLTIP_SEARCH', '')
+if len(WALLTIP_SEARCH) == 0:
+    WALLTIP_SEARCH = ''
+
+PICS = environ.get('PICS', '')
+PICS = (PICS.replace("'", '').replace('"', '').replace('[', '').replace(']', '').replace(",", "")).split()
+if len(PICS) == 0:
+    PICS = ['https://telegra.ph/file/4684a3944225bf5d5ce1b.png']
+
+START_PIC = environ.get('START_PIC', '')
+if len(START_PIC) == 0:
+    START_PIC = 'https://telegra.ph/file/4684a3944225bf5d5ce1b.png'
+
+HELP_IMG = environ.get('HELP_IMG', '')
+if len(HELP_IMG) == 0:
+    HELP_IMG = 'https://telegra.ph/file/4684a3944225bf5d5ce1b.png'
 
 SERVER_PORT = environ.get('SERVER_PORT', '')
 if len(SERVER_PORT) == 0:
@@ -405,6 +472,15 @@ config_dict = {'AS_DOCUMENT': AS_DOCUMENT,
                 'EQUAL_SPLITS': EQUAL_SPLITS,
                 'EXTENSION_FILTER': EXTENSION_FILTER,
                 'GDRIVE_ID': GDRIVE_ID,
+                'WALLFLARE_SEARCH': WALLFLARE_SEARCH,
+                'WALLTIP_SEARCH': WALLTIP_SEARCH,
+                'START_PIC': START_PIC,
+                'HELP_IMG': HELP_IMG,
+                'WALLCRAFT_CATEGORY': WALLCRAFT_CATEGORY,
+                'PIXABAY_API_KEY': PIXABAY_API_KEY,
+                'PIXABAY_CATEGORY': PIXABAY_CATEGORY,
+                'PIXABAY_SEARCH': PIXABAY_SEARCH,
+                'PICS': PICS,
                 'IGNORE_PENDING_REQUESTS': IGNORE_PENDING_REQUESTS,
                 'INCOMPLETE_TASK_NOTIFIER': INCOMPLETE_TASK_NOTIFIER,
                 'INDEX_URL': INDEX_URL,
@@ -459,7 +535,12 @@ config_dict = {'AS_DOCUMENT': AS_DOCUMENT,
                 'SET_COMMANDS': SET_COMMANDS,
                 'DISABLE_LEECH': DISABLE_LEECH,
                 'DM_MODE': DM_MODE,
-                'DELETE_LINKS': DELETE_LINKS}
+                'DELETE_LINKS': DELETE_LINKS,
+                'TIMEZONE': TIMEZONE,
+                'FINISHED_PROGRESS_STR': FINISHED_PROGRESS_STR,
+                'UN_FINISHED_PROGRESS_STR': UN_FINISHED_PROGRESS_STR,
+                'MULTI_WORKING_PROGRESS_STR': MULTI_WORKING_PROGRESS_STR,
+                'SUPPORT_CHAT': SUPPORT_CHAT,}
 
 if GDRIVE_ID:
     DRIVES_NAMES.append("Main")
